@@ -1,0 +1,18 @@
+<html>
+	<head>
+		<title> Test Page </title>
+		<script src="data.js" type="text/javascript"></script> 
+		<script src="WoWDB.js" type="text/javascript"></script>
+		<script src="ConnectionMgr.js" type="text/javascript"></script>
+	</head>
+	<body>
+		 <script type="text/javascript">
+			var connection = new ConnectionMgr();
+			var db = new WoWDB(connection);
+			var npc = db.getCreatureFromEntry("12345");
+
+		 </script>
+	
+		<h3>Hello World!</h3>
+	</body>
+</html>
