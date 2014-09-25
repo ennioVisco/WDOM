@@ -57,16 +57,7 @@ if (mysqli_connect_errno())
 
 $rows = array();
 
-if(isset($_GET['type']) && isset($_GET['entry']) && $_GET['type'] == 'c')
-{
-	
-	$sql = "SELECT * FROM creature_template WHERE entry = ".$_GET['entry'].";";
-	$sth = mysqli_query($con, $sql);
-	
-	while($r = mysqli_fetch_assoc($sth))
-		$rows[] = $r;
-}
-else if(isset($_GET['type']) && $_GET['type'] == 'dbinfo')
+if(isset($_POST['query']))
 {
 	$sth = mysqli_query($con, "SHOW TABLES IN `world`;");
 	while($r = mysqli_fetch_array($sth))

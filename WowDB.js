@@ -1,12 +1,8 @@
-const TYPE_CREATURE;
-const TYPE_GAMEOBJECT;
-const TYPE_OTHER;
-
 //DB Object constructor
 function WoWDB (connection)
 {
 	this.connection = connection;
-	this.getStructure(this.connection);
+	this.getStructure();
 	if(this.structure)
 	{
 		this.creature = this.structure.creature;
@@ -14,27 +10,44 @@ function WoWDB (connection)
 	}
 }
 
-WoWDB.prototype.getStructure = function (connection) 
+WoWDB.prototype.getStructure = function (data) 
 {
+	var self = this;
+	var sql = "SHOW TABLES IN `" + this.connection.database + "`;";
 	this.structure = {"creature":[{"tableName":"","alias":""}],"gameObject":[{"tableName":"","alias":""}]};
-	var tableList = this.connection.getDBStructure();
-	for(i = 0; i < tableList.length; i++)
+	this.structure.creature.pop();     //HOTFIX
+	this.structure.gameObject.pop();   //HOTFIX
+	
+	//Asyncronous Call Manager
+	if(!data)	
 	{
-		//Creating Creature Structure
-		if(tableList[i].substring(0, 9) == "creature_")
-		{
-			var item = {"tableName":tableList[i], "alias":tableList[i].substring(9)};
-			this.structure.creature.push(item);
-		}
-		
-		//Creating GameObject Structure
-		if(tableList[i].substring(0, 11) == "gameobject_")
-		{
-			var item = {"tableName":tableList[i], "alias":tableList[i].substring(11)};
-			this.structure.gameObject.push(item);
-		}
+		var data = "query="+encodeURIComponent(sql);
+		//alert("Requested: "+self.getStructure);
+		this.connection.requestHandler(ASK,data,self.getStructure);
 	}
-	return structure;
+	else
+	{
+		var tableList = data;
+		this.structure.creature.pop();
+		for(i = 0; i < tableList.length; i++)
+		{
+			
+			//Creating Creature Structure
+			if(tableList[i].substring(0, 9) == "creature_")
+			{
+				var item = {"tableName":tableList[i], "alias":tableList[i].substring(9)};
+				this.structure.creature.push(item);
+			}
+			
+			//Creating GameObject Structure
+			if(tableList[i].substring(0, 11) == "gameobject_")
+			{
+				var item = {"tableName":tableList[i], "alias":tableList[i].substring(11)};
+				this.structure.gameObject.push(item);
+			}
+		}
+		return structure;
+	}
 }
 
 WoWDB.prototype.getObjectFromField = function (object, field, entry)
