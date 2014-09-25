@@ -21,14 +21,14 @@ WoWDB.prototype.getStructure = function (data)
 	//Asyncronous Call Manager
 	if(!data)	
 	{
-		var data = "query="+encodeURIComponent(sql);
-		//alert("Requested: "+self.getStructure);
+		var data = "q="+encodeURIComponent(sql);
 		this.connection.requestHandler(ASK,data,self.getStructure);
 	}
 	else
 	{
 		var tableList = data;
 		this.structure.creature.pop();
+		
 		for(i = 0; i < tableList.length; i++)
 		{
 			
